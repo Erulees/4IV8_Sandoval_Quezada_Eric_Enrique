@@ -10,7 +10,7 @@ html, body{
 }
 
 .container-main{
-    border: 7px solid rgba(236, 230, 173, 0.699);
+    border: 7px solid rgb(190, 182, 103);
     border-radius: 50px;
     margin: 2rem;
     background-color: rgb(211, 204, 191);
