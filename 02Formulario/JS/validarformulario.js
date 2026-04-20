@@ -1,6 +1,6 @@
 function validar(formulario){
 
-    //Vamos a crear una función para validar un número mínimo de caracteres en el nombre
+    //Vamos a crear una función para validar un número mínimo de caracteres en el nombre xd
     if(formulario.nombre.value.length < 3){
         alert("Por favor ingrese un nombre mayor de 3 caracteres");
         formulario.nombre.focus();
