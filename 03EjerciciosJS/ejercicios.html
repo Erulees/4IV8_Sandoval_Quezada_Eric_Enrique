@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solución Problemas Secuenciales</title>
+    <link rel="stylesheet" href="./CssEjercicios/ejercicios.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Problemas Secuenciales en JavaScript</h1>
+
+        <div class="form-container">
+            <h3>1. Inversión Bancaria [cite: 4]</h3>
+            <p>Calcula la ganancia del 2% mensual sobre tu capital invertido.</p>
+            <input type="number" id="p1_capital" placeholder="Capital a invertir">
+            <button onclick="p1_inversion()">Calcular Ganancia</button>
+            <div id="res1" class="resultado"></div>
+        </div>
+
+        <div class="form-container">
+            <h3>2. Vendedor y Comisiones [cite: 5]</h3>
+            <p>Sueldo base más 10% extra por tres ventas realizadas.</p>
+            <input type="number" id="p2_sueldo" placeholder="Sueldo Base">
+            <input type="number" id="p2_v1" placeholder="Venta 1">
+            <input type="number" id="p2_v2" placeholder="Venta 2">
+            <input type="number" id="p2_v3" placeholder="Venta 3">
+            <button onclick="p2_comisiones()">Calcular Total</button>
+            <div id="res2" class="resultado"></div>
+        </div>
+
+        <div class="form-container">
+            <h3>3. Descuento en Tienda [cite: 6]</h3>
+            <p>Aplica un 15% de descuento sobre el total de tu compra.</p>
+            <input type="number" id="p3_compra" placeholder="Total de la compra">
+            <button onclick="p3_descuento()">Aplicar Descuento</button>
+            <div id="res3" class="resultado"></div>
+        </div>
+
+        <div class="form-container">
+            <h3>4. Calificación Final [cite: 7, 8]</h3>
+            <p>55% Parciales, 30% Examen y 15% Trabajo Final.</p>
+            <input type="number" id="p4_c1" placeholder="Parcial 1">
+            <input type="number" id="p4_c2" placeholder="Parcial 2">
+            <input type="number" id="p4_c3" placeholder="Parcial 3">
+            <input type="number" id="p4_ef" placeholder="Examen Final">
+            <input type="number" id="p4_tf" placeholder="Trabajo Final">
+            <button onclick="p4_promedio()">Calcular Nota</button>
+            <div id="res4" class="resultado"></div>
+        </div>
+
+        <div class="form-container">
+            <h3>5. Porcentaje de Estudiantes [cite: 12]</h3>
+            <p>Calcula el porcentaje de hombres y mujeres en el grupo.</p>
+            <input type="number" id="p5_h" placeholder="Número de hombres">
+            <input type="number" id="p5_m" placeholder="Número de mujeres">
+            <button onclick="p5_porcentaje()">Calcular %</button>
+            <div id="res5" class="resultado"></div>
+        </div>
+
+        <div class="form-container">
+            <h3>6. Cálculo de Edad [cite: 13]</h3>
+            <p>Determina la edad actual a partir del año de nacimiento.</p>
+            <input type="number" id="p6_anio" placeholder="Año de nacimiento (ej: 1995)">
+            <button onclick="p6_edad()">Calcular Edad</button>
+            <div id="res6" class="resultado"></div>
+        </div>
+
+        <div class="container-footer">
+            <footer>
+                <a href="#">Regresar a la página principal</a>
+            </footer>
+        </div>
+    </div>
+    <script src="./JS/validarformulario.js"></script>
+</body>
+</html>
