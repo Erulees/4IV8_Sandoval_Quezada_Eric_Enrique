@@ -12,6 +12,7 @@
 
         <!-- PROBLEMA 1 -->
         <div class="problema-container">
+
             <h2 class="problema-titulo">Problema 1</h2>
 
             <h3>
@@ -27,6 +28,7 @@
                     class="problema-input"
                     id="p1-input"
                     placeholder="Ingresa palabras separadas por espacio"
+                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                 >
 
                 <button
@@ -38,11 +40,10 @@
                     Invertir palabras
                 </button>
 
-                <pre class="problema-output" id="p1-output">
-Esperando datos...
-                </pre>
+                <pre class="problema-output" id="p1-output">Esperando datos...</pre>
 
             </div>
+
         </div>
 
         <!-- PROBLEMA 2 -->
@@ -58,14 +59,16 @@ Esperando datos...
                 <br><br>
 
                 Producto escalar:
-                <em>x1*y1 + x2*y2 + x3*y3 ...</em>
+                <em>x1*y1 + x2*y2 + x3*y3...</em>
             </h3>
 
             <div class="problema-content">
 
                 <div class="tablas" style="width:100%; display:flex; justify-content:center;">
 
+                    <!-- TABLA X -->
                     <table class="problema-table" style="width:45%;">
+
                         <thead>
                             <tr>
                                 <th>X</th>
@@ -74,30 +77,39 @@ Esperando datos...
                         </thead>
 
                         <tbody>
+
                             <tr>
                                 <td>x1</td>
                                 <td><input type="number" class="problema-input" id="p2-x1"></td>
                             </tr>
+
                             <tr>
                                 <td>x2</td>
                                 <td><input type="number" class="problema-input" id="p2-x2"></td>
                             </tr>
+
                             <tr>
                                 <td>x3</td>
                                 <td><input type="number" class="problema-input" id="p2-x3"></td>
                             </tr>
+
                             <tr>
                                 <td>x4</td>
                                 <td><input type="number" class="problema-input" id="p2-x4"></td>
                             </tr>
+
                             <tr>
                                 <td>x5</td>
                                 <td><input type="number" class="problema-input" id="p2-x5"></td>
                             </tr>
+
                         </tbody>
+
                     </table>
 
+                    <!-- TABLA Y -->
                     <table class="problema-table" style="width:45%;">
+
                         <thead>
                             <tr>
                                 <th>Y</th>
@@ -106,27 +118,34 @@ Esperando datos...
                         </thead>
 
                         <tbody>
+
                             <tr>
                                 <td>y1</td>
                                 <td><input type="number" class="problema-input" id="p2-y1"></td>
                             </tr>
+
                             <tr>
                                 <td>y2</td>
                                 <td><input type="number" class="problema-input" id="p2-y2"></td>
                             </tr>
+
                             <tr>
                                 <td>y3</td>
                                 <td><input type="number" class="problema-input" id="p2-y3"></td>
                             </tr>
+
                             <tr>
                                 <td>y4</td>
                                 <td><input type="number" class="problema-input" id="p2-y4"></td>
                             </tr>
+
                             <tr>
                                 <td>y5</td>
                                 <td><input type="number" class="problema-input" id="p2-y5"></td>
                             </tr>
+
                         </tbody>
+
                     </table>
 
                 </div>
@@ -140,11 +159,10 @@ Esperando datos...
                     Calcular Producto Escalar
                 </button>
 
-                <pre class="problema-output" id="p2-output">
-Esperando datos...
-                </pre>
+                <pre class="problema-output" id="p2-output">Esperando datos...</pre>
 
             </div>
+
         </div>
 
         <!-- PROBLEMA 3 -->
@@ -172,6 +190,7 @@ Esperando datos...
                     class="problema-input"
                     id="p3-input"
                     placeholder="Ejemplo: CASA,PERRO,GATO"
+                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ,]/g,'')"
                 >
 
                 <button
@@ -183,16 +202,15 @@ Esperando datos...
                     Calcular palabras
                 </button>
 
-                <pre class="problema-output" id="p3-output">
-Esperando datos...
-                </pre>
+                <pre class="problema-output" id="p3-output">Esperando datos...</pre>
 
             </div>
+
         </div>
 
     </div>
 
-    <!-- REGRESO AL MENÚ -->
+    <!-- REGRESAR -->
     <div class="container-footer">
         <footer>
             <a href="../index.html">Regresar a la página principal</a>
