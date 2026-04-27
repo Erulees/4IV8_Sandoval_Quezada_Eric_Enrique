@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Ejercicio de los 10</title>
+    <link rel="stylesheet" href="./CssEjercicios/CssEjercicios.css">
+</head>
+<body>
+    <div class="Ejercicio1">
+        <form method="post" id="formularioejer1" name="formularioejer1">
+            <label>
+                Formulario para calcular una inversión al 10% de interés anual
+            </label>
+            <div class="container-table">
+                <table class="table">
+                    <tr>
+                        <td>
+                            Introduce la cantidad que deseas invertir por todo 1 año:
+                        </td>
+                        <td>
+                            <input 
+                                type="text"
+                                name="cantidad"
+                                id="cantidadi"
+                                onkeypress="return validarn(event)"
+                                onpaste="return false"
+                                ondrop="return false"
+                                autocomplete="off"
+                                inputmode="decimal"
+                                oninput="this.value=this.value.replace(/[^0-9.]/g,'')"
+                            >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input 
+                                type="button" 
+                                value="Calcular interes" 
+                                onclick="interes()"
+                            >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Su saldo es de:
+                        </td>
+                        <td>
+                            <input 
+                                type="text" 
+                                name="sueldoi" 
+                                id="sueldoi" 
+                                readonly
+                            >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input 
+                                type="button" 
+                                value="Borrar Datos" 
+                                onclick="borrar()"
+                            >
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+    <script src="./JSEjercicios/interes.js"></script>
+    <div class="container-footer">
+        <a href="../index.html" class="boton-regresar">Regresar a la página principal</a>
+    </div>
+</body>
+</html>
