@@ -1,0 +1,25 @@
+{
+  "name": "07crud",
+  "version": "1.0.0",
+  "description": "Ejemplo de crud con vainillaJS",
+  "keywords": [
+    "crud",
+    "mysql",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/Erulees/4IV8_Sandoval_Quezada_Eric_Enrique#readme",
+  "bugs": {
+    "url": "https://github.com/Erulees/4IV8_Sandoval_Quezada_Eric_Enrique/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Erulees/4IV8_Sandoval_Quezada_Eric_Enrique.git"
+  },
+  "license": "ISC",
+  "author": "Sandoval Quezada Eric Enrique",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
