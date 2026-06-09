@@ -19,22 +19,24 @@ app.use((req, res, next) => {
     next();
 });
 
-// CORRECCIÓN 1: Servir archivos estáticos apuntando correctamente a la raíz (saliendo de src)
+// Servir archivos estáticos apuntando a public
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Importación de Routers desde la carpeta src/Routers/
+// Importación de Routers
 const operativosRouter = require('./Routers/operativos');
 const objetivosRouter  = require('./Routers/objetivos');
 const encargosRouter   = require('./Routers/encargos');
 const arsenalRouter    = require('./Routers/arsenal'); 
 
-// CORRECCIÓN 2: Registro de Endpoints usando las variables correctas y alineadas con app.js
+// =========================================================
+// CORRECCIÓN PRINCIPAL: Emparejar las rutas
+// =========================================================
 app.use('/api/operativos', operativosRouter);
-app.use('/api/objetivos', objetivosRouter);  // Corregido: antes llamadasRouter
-app.use('/api/encargos', encargosRouter);    // Corregido: antes armasRouter
-app.use('/api/mascaras', arsenalRouter);     // Corregido: antes mascarasRouter
+app.use('/api/objetivos', objetivosRouter); 
+app.use('/api/encargos', encargosRouter);   // Maneja las "Llamadas"
+app.use('/api/arsenal', arsenalRouter);     // Maneja tanto Máscaras como Armas
 
-// CORRECCIÓN 3: Ruta de diagnóstico del sistema actualizada
+// Ruta de diagnóstico del sistema
 app.get('/api', (req, res) => {
     res.json({
         status: 'success',
@@ -43,12 +45,12 @@ app.get('/api', (req, res) => {
             operativos: '/api/operativos',
             objetivos: '/api/objetivos',
             encargos: '/api/encargos',
-            mascaras: '/api/mascaras'
+            arsenal: '/api/arsenal'
         }
     });
 });
 
-// Captura de rutas no autorizadas en la API
+// Captura de rutas no autorizadas
 app.use('/api/*path', (req, res) => {
     res.status(404).json({ 
         status: 'error', 

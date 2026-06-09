@@ -4,27 +4,22 @@
 
 const notificacionDiv = document.getElementById('notificacion');
 
-// 1. SISTEMA DE ALERTAS (Mensajes del Contestador)
+// 1. SISTEMA DE ALERTAS
 function mostrarNotificacion(mensaje, tipo = 'exito') {
     notificacionDiv.textContent = mensaje;
     notificacionDiv.className = `notificacion ${tipo}`;
     notificacionDiv.style.display = 'block';
-    // Colgar la llamada después de 4 segundos
     setTimeout(() => { notificacionDiv.style.display = 'none'; }, 4000);
 }
 
-// 2. FETCH CENTRALIZADO (CORREGIDO: Ahora usa la URL dinámica)
+// 2. FETCH CENTRALIZADO 
 async function fetchAPI(url, opciones = {}) {
     const met = opciones.method || 'GET';
-    
-    // Actualizar monitores visuales si existen
     if(document.getElementById('api-metodo')) document.getElementById('api-metodo').textContent = met;
     if(document.getElementById('api-url')) document.getElementById('api-url').textContent = url;
-    
     const uiCodigo = document.getElementById('api-codigo');
 
     try {
-        // CORRECCIÓN PRO: Usamos la 'url' que recibe la función, no una fija
         const respuesta = await fetch(url, opciones); 
         const data = await respuesta.json();
         
@@ -32,15 +27,10 @@ async function fetchAPI(url, opciones = {}) {
             uiCodigo.textContent = respuesta.status;
             uiCodigo.className = `badge ${respuesta.ok ? 'badge-success' : 'badge-error'}`;
         }
-        
         return { ok: respuesta.ok, status: respuesta.status, data };
     } catch (error) {
-        if (uiCodigo) {
-            uiCodigo.textContent = 'DEAD';
-            uiCodigo.className = 'badge badge-error';
-        }
-        mostrarNotificacion('La línea está muerta. No hay conexión con el servidor.', 'error');
-        console.error('50 Blessings Error:', error);
+        if (uiCodigo) uiCodigo.textContent = 'DEAD';
+        mostrarNotificacion('La línea está muerta. No hay conexión.', 'error');
         return { ok: false, data: { status: 'error', message: 'Servidor no responde' } };
     }
 }
@@ -61,27 +51,51 @@ function procesandoFormulario(botonId, cargando) {
     }
 }
 
-// 4. NAVEGACIÓN SPA (CORREGIDO: Evita saltos inesperados)
+// 4. NAVEGACIÓN SPA
 function cambiarSeccion(seccion) {
-    // Ocultar todas las secciones
     document.querySelectorAll('.seccion').forEach(s => s.style.display = 'none');
-    // Quitar clase activa de los botones
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     
-    // Mostrar sección actual
     const seccionDestino = document.getElementById(`seccion-${seccion}`);
-    if (seccionDestino) {
-        seccionDestino.style.display = 'block';
-    }
+    if (seccionDestino) seccionDestino.style.display = 'block';
 
-    // Activar botón correspondiente
     const btnActivo = document.querySelector(`button[onclick="cambiarSeccion('${seccion}')"]`);
     if (btnActivo) btnActivo.classList.add('active');
     
-    // Cargar datos según la sección
-    if (seccion === 'encargos') cargarEncargos();
-    if (seccion === 'objetivos') cargarObjetivos();
     if (seccion === 'operativos') cargarOperativos();
+    if (seccion === 'mascaras') cargarMascaras();
+    if (seccion === 'armas') cargarArmas();
+    if (seccion === 'llamadas') {
+        cargarLlamadas();
+        cargarOpcionesLlamada(); // ¡NUEVO! Llama a los datos para los selectores
+    }
+}
+
+// =========================================================
+// FUNCIONES DE BORRADO
+// =========================================================
+async function eliminarOperativo(id) {
+    if (!confirm('¿Desconectar permanentemente a este operativo?')) return;
+    const res = await fetchAPI(`/api/operativos/${id}`, { method: 'DELETE' });
+    if (res.ok) cargarOperativos();
+}
+
+async function eliminarMascara(id) {
+    if (!confirm('¿Destruir esta máscara del inventario?')) return;
+    const res = await fetchAPI(`/api/arsenal/${id}`, { method: 'DELETE' });
+    if (res.ok) cargarMascaras();
+}
+
+async function eliminarArma(id) {
+    if (!confirm('¿Arrojar esta arma a la basura?')) return;
+    const res = await fetchAPI(`/api/arsenal/${id}`, { method: 'DELETE' });
+    if (res.ok) cargarArmas();
+}
+
+async function eliminarLlamada(id) {
+    if (!confirm('¿Borrar esta cinta de evidencia?')) return;
+    const res = await fetchAPI(`/api/encargos/${id}`, { method: 'DELETE' });
+    if (res.ok) cargarLlamadas();
 }
 
 // =========================================================
@@ -92,7 +106,6 @@ function cambiarSeccion(seccion) {
 async function cargarOperativos() {
     const res = await fetchAPI('/api/operativos');
     if (!res.ok) return;
-    
     const tbody = document.getElementById('tbody-operativos');
     if(!tbody) return;
 
@@ -102,167 +115,180 @@ async function cargarOperativos() {
             <td><button class="btn-eliminar" onclick="eliminarOperativo(${o.id})">Borrar Registro</button></td>
         </tr>
     `).join('');
-    
     document.getElementById('tabla-operativos').style.display = 'table';
-    document.getElementById('contador-operativos').textContent = res.data.count;
-    document.getElementById('carga-operativos').style.display = 'none';
+    if(document.getElementById('carga-operativos')) document.getElementById('carga-operativos').style.display = 'none';
 }
 
-document.getElementById('form-operativo').addEventListener('submit', async (e) => {
-    e.preventDefault(); // Evita que la página se recargue
-    procesandoFormulario('btn-guardar-operativo', true);
+const formOperativo = document.getElementById('form-operativo');
+if (formOperativo) {
+    formOperativo.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        procesandoFormulario('btn-guardar-operativo', true);
 
-    const payload = {
-        pseudonimo: document.getElementById('operativo-nombre').value,
-        mascara: document.getElementById('operativo-mascara').value,
-        nivel_peligro: document.getElementById('operativo-peligro').value
-    };
+        let nivelPeligroNum = parseInt(document.getElementById('operativo-estado') ? document.getElementById('operativo-estado').value : 1);
+        if (isNaN(nivelPeligroNum)) nivelPeligroNum = 1; 
 
-    const res = await fetchAPI('/api/operativos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        const payload = {
+            pseudonimo: document.getElementById('operativo-nombre').value,
+            mascara: document.getElementById('operativo-alias').value, 
+            nivel_peligro: nivelPeligroNum 
+        };
+
+        const res = await fetchAPI('/api/operativos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        procesandoFormulario('btn-guardar-operativo', false);
+
+        if (!res.ok) mostrarNotificacion(res.data.message || 'Error al guardar', 'error');
+        else { mostrarNotificacion('Operativo suscrito a los mensajes.'); cargarOperativos(); e.target.reset(); }
     });
-
-    procesandoFormulario('btn-guardar-operativo', false);
-
-    if (!res.ok) {
-        mostrarNotificacion(res.data.message || 'Error al guardar', 'error');
-    } else {
-        mostrarNotificacion('Operativo suscrito a los mensajes.');
-        cargarOperativos();
-        e.target.reset();
-    }
-});
-
-async function eliminarOperativo(id) {
-    if(!confirm('¿Desconectar a este operativo?')) return;
-    const res = await fetchAPI(`/api/operativos/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-        mostrarNotificacion('Registro eliminado');
-        cargarOperativos();
-    }
 }
 
-// --- OBJETIVOS (Aquí estaba el error que te regresaba a operativos) ---
-async function cargarObjetivos() {
-    const res = await fetchAPI('/api/objetivos');
+// --- MÁSCARAS (Apunta a Arsenal) ---
+async function cargarMascaras() {
+    const res = await fetchAPI('/api/arsenal');
     if (!res.ok) return;
-
-    const tbody = document.getElementById('tbody-objetivos');
+    const tbody = document.getElementById('tbody-mascaras');
     if(!tbody) return;
 
-    tbody.innerHTML = res.data.data.map(obj => `
+    const mascaras = res.data.data.filter(m => m.tipo.toLowerCase() === 'máscara' || m.tipo.toLowerCase() === 'mascara');
+    
+    tbody.innerHTML = mascaras.map(m => `
         <tr>
-            <td>${obj.id}</td><td>${obj.nombre}</td><td>${obj.faccion}</td><td>${obj.ubicacion}</td>
-            <td><button class="btn-eliminar" onclick="eliminarObjetivo(${obj.id})">Limpiar Zona</button></td>
+            <td>${m.id}</td><td>-</td><td>${m.nombre}</td><td>${m.habilidad}</td>
+            <td><button class="btn-eliminar" onclick="eliminarMascara(${m.id})">Romper Máscara</button></td>
         </tr>
     `).join('');
-    document.getElementById('tabla-objetivos').style.display = 'table';
-    document.getElementById('contador-objetivos').textContent = res.data.count;
-    document.getElementById('carga-objetivos').style.display = 'none';
+    document.getElementById('tabla-mascaras').style.display = 'table';
+    if(document.getElementById('carga-mascaras')) document.getElementById('carga-mascaras').style.display = 'none';
 }
 
-document.getElementById('form-objetivo').addEventListener('submit', async (e) => {
-    e.preventDefault(); // CRÍTICO: Evita el salto a Operativos
-    procesandoFormulario('btn-guardar-objetivo', true);
+const formMascara = document.getElementById('form-mascara');
+if (formMascara) {
+    formMascara.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        procesandoFormulario('btn-guardar-mascara', true);
 
-    const payload = {
-        nombre: document.getElementById('objetivo-nombre').value,
-        faccion: document.getElementById('objetivo-faccion').value,
-        ubicacion: document.getElementById('objetivo-ubicacion').value
-    };
+        const animalInput = document.getElementById('mascara-animal') ? document.getElementById('mascara-animal').value : '';
+        const nombreInput = document.getElementById('mascara-nombre').value;
+        const nombreFinal = animalInput ? `${animalInput} - ${nombreInput}` : nombreInput;
 
-    // CORREGIDO: Ahora va a /api/objetivos
-    const res = await fetchAPI('/api/objetivos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        const payload = {
+            nombre: nombreFinal,
+            tipo: 'Máscara', 
+            habilidad: document.getElementById('mascara-habilidad').value
+        };
+
+        const res = await fetchAPI('/api/arsenal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        procesandoFormulario('btn-guardar-mascara', false);
+
+        if (!res.ok) mostrarNotificacion(res.data.message || 'Error al guardar', 'error');
+        else { mostrarNotificacion('Máscara añadida al inventario.'); cargarMascaras(); e.target.reset(); }
     });
+}
 
-    procesandoFormulario('btn-guardar-objetivo', false);
+// --- ARMAS (Apunta a Arsenal) ---
+async function cargarArmas() {
+    const res = await fetchAPI('/api/arsenal');
+    if (!res.ok) return;
+    const tbody = document.getElementById('tbody-armas');
+    if(!tbody) return;
 
-    if (!res.ok) {
-        mostrarNotificacion(res.data.message, 'error');
-    } else {
-        mostrarNotificacion('Nuevo encargo agendado.');
-        cargarObjetivos();
-        e.target.reset();
+    const armas = res.data.data.filter(a => a.tipo.toLowerCase() === 'arma');
+
+    tbody.innerHTML = armas.map(a => `
+        <tr>
+            <td>${a.id}</td><td>${a.nombre}</td><td>${a.tipo}</td><td>${a.habilidad}</td>
+            <td><button class="btn-eliminar" onclick="eliminarArma(${a.id})">Descartar</button></td>
+        </tr>
+    `).join('');
+    document.getElementById('tabla-armas').style.display = 'table';
+    if(document.getElementById('carga-armas')) document.getElementById('carga-armas').style.display = 'none';
+}
+
+const formArma = document.getElementById('form-arma');
+if (formArma) {
+    formArma.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        procesandoFormulario('btn-guardar-arma', true);
+
+        const payload = {
+            nombre: document.getElementById('arma-nombre').value,
+            tipo: 'Arma', 
+            habilidad: document.getElementById('arma-lethal') ? document.getElementById('arma-lethal').value : 'Letal'
+        };
+
+        const res = await fetchAPI('/api/arsenal', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        procesandoFormulario('btn-guardar-arma', false);
+
+        if (!res.ok) mostrarNotificacion(res.data.message || 'Error al guardar arma', 'error');
+        else { mostrarNotificacion('Arma guardada en el maletero.'); cargarArmas(); e.target.reset(); }
+    });
+}
+
+// --- LLAMADAS (Apunta a Encargos) ---
+
+// ¡NUEVO! Función para llenar los combos desplegables
+async function cargarOpcionesLlamada() {
+    const selectOperativo = document.getElementById('llamada-operativo');
+    const selectMascara = document.getElementById('llamada-mascara');
+
+    // Cargar Operativos en el select
+    const resOp = await fetchAPI('/api/operativos');
+    if (resOp.ok && selectOperativo) {
+        selectOperativo.innerHTML = '<option value="">-- Seleccionar Operativo --</option>' + 
+            resOp.data.data.map(o => `<option value="${o.id}">${o.pseudonimo} (Alias: ${o.mascara})</option>`).join('');
     }
-});
 
-async function eliminarObjetivo(id) {
-    if(!confirm('¿Zona limpia?')) return;
-    const res = await fetchAPI(`/api/objetivos/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-        mostrarNotificacion('Evidencia borrada');
-        cargarObjetivos();
+    // Cargar Máscaras en el select (filtradas desde arsenal)
+    const resMasc = await fetchAPI('/api/arsenal');
+    if (resMasc.ok && selectMascara) {
+        const mascaras = resMasc.data.data.filter(m => m.tipo.toLowerCase() === 'máscara' || m.tipo.toLowerCase() === 'mascara');
+        // Se manda el nombre de la máscara como valor para guardarlo en arma_usada
+        selectMascara.innerHTML = '<option value="">-- Seleccionar Máscara --</option>' + 
+            mascaras.map(m => `<option value="${m.nombre}">${m.nombre}</option>`).join('');
     }
 }
 
-// --- ENCARGOS ---
-async function cargarEncargos() {
+async function cargarLlamadas() {
     const res = await fetchAPI('/api/encargos');
     if (!res.ok) return;
+    const tbody = document.getElementById('tbody-llamadas');
+    if(!tbody) return;
 
-    const tbody = document.getElementById('tbody-encargos');
-    
-    // Actualizar Selects
-    const opRes = await fetchAPI('/api/operativos');
-    const obRes = await fetchAPI('/api/objetivos');
-    
-    if (opRes.ok && document.getElementById('encargo-operativo')) {
-        document.getElementById('encargo-operativo').innerHTML = `<option value="">-- Seleccionar Operativo --</option>` + 
-            opRes.data.data.map(o => `<option value="${o.id}">${o.pseudonimo} (${o.mascara})</option>`).join('');
-    }
-    if (obRes.ok && document.getElementById('encargo-objetivo')) {
-        document.getElementById('encargo-objetivo').innerHTML = `<option value="">-- Seleccionar Objetivo --</option>` + 
-            obRes.data.data.map(obj => `<option value="${obj.id}">${obj.nombre} - ${obj.ubicacion}</option>`).join('');
-    }
-
-    if(tbody) {
-        tbody.innerHTML = res.data.data.map(e => `
-            <tr>
-                <td>${e.id}</td><td>${e.operativo_nombre}</td><td>${e.objetivo_nombre}</td>
-                <td>${e.arma_usada}</td><td>${e.puntuacion} pts</td><td>${new Date(e.fecha).toLocaleString()}</td>
-                <td><button class="btn-eliminar" onclick="eliminarEncargo(${e.id})">Borrar Evidencia</button></td>
-            </tr>
-        `).join('');
-    }
-    document.getElementById('tabla-encargos').style.display = 'table';
-    document.getElementById('contador-encargos').textContent = res.data.count;
-    document.getElementById('carga-encargos').style.display = 'none';
+    tbody.innerHTML = res.data.data.map(l => `
+        <tr>
+            <td>${l.id}</td><td>${l.operativo_nombre || 'Desconocido'}</td><td>${l.arma_usada}</td><td>${l.objetivo_nombre}</td><td>Pts: ${l.puntuacion}</td>
+            <td><button class="btn-eliminar" onclick="eliminarLlamada(${l.id})">Borrar Cinta</button></td>
+        </tr>
+    `).join('');
+    document.getElementById('tabla-llamadas').style.display = 'table';
+    if(document.getElementById('carga-llamadas')) document.getElementById('carga-llamadas').style.display = 'none';
 }
 
-document.getElementById('form-encargo').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    procesandoFormulario('btn-registrar-encargo', true);
+const formLlamada = document.getElementById('form-llamada');
+if (formLlamada) {
+    formLlamada.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        procesandoFormulario('btn-registrar-llamada', true);
 
-    const payload = {
-        operativo_id: document.getElementById('encargo-operativo').value,
-        objetivo_id: document.getElementById('encargo-objetivo').value,
-        arma_usada: document.getElementById('encargo-arma').value,
-        puntuacion: document.getElementById('encargo-puntuacion').value
-    };
+        let pts = parseInt(document.getElementById('llamada-mensaje') ? document.getElementById('llamada-mensaje').value : '1000');
+        if(isNaN(pts)) pts = 1000;
 
-    const res = await fetchAPI('/api/encargos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        const payload = {
+            operativo_id: document.getElementById('llamada-operativo').value,
+            objetivo_id: document.getElementById('llamada-objetivo').value,
+            arma_usada: document.getElementById('llamada-mascara').value || 'Mano limpia',
+            puntuacion: pts
+        };
+
+        const res = await fetchAPI('/api/encargos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        procesandoFormulario('btn-registrar-llamada', false);
+
+        if (!res.ok) mostrarNotificacion(res.data.message || 'Error en la central', 'error');
+        else { mostrarNotificacion('Mensaje dejado en la contestadora.'); cargarLlamadas(); e.target.reset(); }
     });
-
-    procesandoFormulario('btn-registrar-encargo', false);
-
-    if (!res.ok) mostrarNotificacion(res.data.message, 'error');
-    else {
-        mostrarNotificacion('El trabajo está hecho.');
-        cargarEncargos();
-        e.target.reset();
-    }
-});
+}
 
 // 5. INICIALIZACIÓN
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar la sección inicial
     cambiarSeccion('operativos');
 });
