@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50 Blessings | Red Privada</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>50 Blessings</h1>
+        <p>"Do you like hurting other people?"</p>
+        
+        <nav class="tabs">
+            <button class="tab active" onclick="cambiarSeccion('operativos')">Operativos</button>
+            <button class="tab" onclick="cambiarSeccion('mascaras')">Máscaras</button>
+            <button class="tab" onclick="cambiarSeccion('llamadas')">Llamadas</button>
+            <button class="tab" onclick="cambiarSeccion('armas')">Arsenal</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="info-api">
+            <h3>Conexión Segura Establecida</h3>
+            <div class="api-status">
+                <span id="api-metodo" class="badge">-</span>
+                <span id="api-url" class="api-url">Esperando señal de la central...</span>
+                <span id="api-codigo" class="badge badge-neutral">-</span>
+            </div>
+        </section>
+
+        <div id="seccion-operativos" class="seccion">
+            <section class="formulario-section">
+                <h2 id="form-titulo-operativo">Registrar Nuevo Operativo</h2>
+                <form id="form-operativo" novalidate>
+                    <input type="hidden" id="operativo-id">
+                    <div class="campos-grid">
+                        <div class="campo">
+                            <label for="operativo-nombre">Nombre Real:</label>
+                            <input type="text" id="operativo-nombre" placeholder="Ej: Richard, Biker..." required>
+                            <span class="error" id="error-operativo-nombre"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="operativo-alias">Alias de Combate:</label>
+                            <input type="text" id="operativo-alias" placeholder="Ej: Jacket" required>
+                            <span class="error" id="error-operativo-alias"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="operativo-estado">Estado Actual:</label>
+                            <select id="operativo-estado" required>
+                                <option value="Activo">Activo</option>
+                                <option value="MIA">Desaparecido en Acción</option>
+                                <option value="Muerto">Eliminado</option>
+                            </select>
+                            <span class="error" id="error-operativo-estado"></span>
+                        </div>
+                    </div>
+                    <div class="botones">
+                        <button type="submit" id="btn-guardar-operativo">Dar de Alta</button>
+                        <button type="button" id="btn-cancelar-operativo" class="btn-secundario" style="display:none;">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="tabla-section">
+                <h2>Directorio de Operativos <span id="contador-operativos" class="badge badge-neutral">0</span></h2>
+                <p id="carga-operativos">Leyendo cintas de contestadora...</p>
+                <table id="tabla-operativos" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Alias</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-operativos"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="seccion-mascaras" class="seccion" style="display:none;">
+            <section class="formulario-section">
+                <h2 id="form-titulo-mascara">Añadir Máscara al Inventario</h2>
+                <form id="form-mascara" novalidate>
+                    <input type="hidden" id="mascara-id">
+                    <div class="campos-grid">
+                        <div class="campo">
+                            <label for="mascara-animal">Tipo de Animal:</label>
+                            <input type="text" id="mascara-animal" placeholder="Ej: Gallo, Tigre, Cerdo" required>
+                            <span class="error" id="error-mascara-animal"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="mascara-nombre">Nombre de la Máscara:</label>
+                            <input type="text" id="mascara-nombre" placeholder="Ej: Richard, Tony, Aubrey" required>
+                            <span class="error" id="error-mascara-nombre"></span>
+                        </div>
+                        <div class="campo" style="grid-column: 1 / -1;">
+                            <label for="mascara-habilidad">Habilidad Especial:</label>
+                            <input type="text" id="mascara-habilidad" placeholder="Ej: Puños letales, Más armas, Caminar más rápido..." required>
+                            <span class="error" id="error-mascara-habilidad"></span>
+                        </div>
+                    </div>
+                    <div class="botones">
+                        <button type="submit" id="btn-guardar-mascara">Guardar Máscara</button>
+                        <button type="button" id="btn-cancelar-mascara" class="btn-secundario" style="display:none;">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="tabla-section">
+                <h2>Colección de Máscaras <span id="contador-mascaras" class="badge badge-neutral">0</span></h2>
+                <p id="carga-mascaras">Buscando en la caja...</p>
+                <table id="tabla-mascaras" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Animal</th>
+                            <th>Nombre</th>
+                            <th>Habilidad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-mascaras"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="seccion-llamadas" class="seccion" style="display:none;">
+            <section class="formulario-section">
+                <h2>Dejar Mensaje en la Contestadora</h2>
+                <form id="form-llamada" novalidate>
+                    <div class="campos-grid campos-grid-3">
+                        <div class="campo">
+                            <label for="llamada-operativo">Asignar Operativo:</label>
+                            <select id="llamada-operativo" required>
+                                <option value="">-- Seleccionar --</option>
+                            </select>
+                            <span class="error" id="error-llamada-operativo"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="llamada-mascara">Máscara Sugerida:</label>
+                            <select id="llamada-mascara" required>
+                                <option value="">-- Seleccionar --</option>
+                            </select>
+                            <span class="error" id="error-llamada-mascara"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="llamada-objetivo">Objetivo / Jefe:</label>
+                            <input type="text" id="llamada-objetivo" placeholder="Ej: Mafia Rusa" required>
+                            <span class="error" id="error-llamada-objetivo"></span>
+                        </div>
+                        <div class="campo" style="grid-column: 1 / -1;">
+                            <label for="llamada-mensaje">Mensaje en clave:</label>
+                            <input type="text" id="llamada-mensaje" placeholder="Ej: Necesitamos que limpies el piso 14..." required>
+                            <span class="error" id="error-llamada-mensaje"></span>
+                        </div>
+                    </div>
+                    <div class="botones">
+                        <button type="submit" id="btn-registrar-llamada">Realizar Llamada</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="tabla-section">
+                <h2>Registro de Llamadas <span id="contador-llamadas" class="badge badge-neutral">0</span></h2>
+                <p id="carga-llamadas">Rebobinando cinta...</p>
+                <table id="tabla-llamadas" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Operativo</th>
+                            <th>Máscara</th>
+                            <th>Objetivo</th>
+                            <th>Mensaje</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-llamadas"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="seccion-armas" class="seccion" style="display:none;">
+            <section class="formulario-section">
+                <h2 id="form-titulo-arma">Registrar Arma</h2>
+                <form id="form-arma" novalidate>
+                    <input type="hidden" id="arma-id">
+                    <div class="campos-grid">
+                        <div class="campo">
+                            <label for="arma-nombre">Nombre del Arma:</label>
+                            <input type="text" id="arma-nombre" placeholder="Ej: Bate de Béisbol, Uzi" required>
+                        </div>
+                        <div class="campo">
+                            <label for="arma-tipo">Categoría:</label>
+                            <select id="arma-tipo" required>
+                                <option value="Cuerpo a Cuerpo">Cuerpo a Cuerpo</option>
+                                <option value="Fuego">Arma de Fuego</option>
+                                <option value="Arrojadiza">Arrojadiza</option>
+                            </select>
+                        </div>
+                        <div class="campo" style="grid-column: 1 / -1;">
+                            <label for="arma-lethal">Letalidad / Efecto:</label>
+                            <input type="text" id="arma-lethal" placeholder="Ej: Muerte instantánea, ruido alto..." required>
+                        </div>
+                    </div>
+                    <div class="botones">
+                        <button type="submit" id="btn-guardar-arma">Guardar Arma</button>
+                        <button type="button" id="btn-cancelar-arma" class="btn-secundario" style="display:none;">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="tabla-section">
+                <h2>Arsenal Disponible <span id="contador-armas" class="badge badge-neutral">0</span></h2>
+                <p id="carga-armas">Abriendo maletero del auto...</p>
+                <table id="tabla-armas" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Letalidad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-armas"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="notificacion" class="notificacion" style="display:none;"></div>
+    </main>
+
+    <script src="./js/app.js"></script>
+</body>
+</html>

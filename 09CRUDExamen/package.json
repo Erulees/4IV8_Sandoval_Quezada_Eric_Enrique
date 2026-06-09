@@ -1,0 +1,30 @@
+{
+  "name": "09crudexamen",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "crud",
+    "examen",
+    "mvc"
+  ],
+  "homepage": "https://github.com/Erulees/4IV8_Sandoval_Quezada_Eric_Enrique#readme",
+  "bugs": {
+    "url": "https://github.com/Erulees/4IV8_Sandoval_Quezada_Eric_Enrique/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Erulees/4IV8_Sandoval_Quezada_Eric_Enrique.git"
+  },
+  "license": "ISC",
+  "author": "Sandoval Quezada Eric Enrique",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mysql2": "^3.22.5"
+  }
+}
