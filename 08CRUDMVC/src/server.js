@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 //servidor para iniciarlizar con express
 
-const Port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 //para poder aplicar el MVC necesitamos un intermediario que se va a encargar de ser un mesero (middleware), el cual para cada peticion que pasa por la ruta de la vista, obtiene una petición y la envia a un controlador
 
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 //debemos definir las rutas para los archivos
-app.use(express.static(path.join(__dirname, '--', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 //vamos a manejar las rutas de los recursos que se van a obtener por medio de las peticiones o respuestas
 //pueden existen rutas como app.use('api/usuarios', usuariosRouter) todas las rutas son los metodos posibles para cada formulario
@@ -32,9 +32,9 @@ app.use(express.static(path.join(__dirname, '--', 'public')));
 //router.post('/')
 //router.get('/:id')
 
-const usuariosRouter = require('./routes/usuarios');
-const productosRouter = require('./routes/productos');
-const comprasRouter = require('./routes/compras');
+const usuariosRouter = require('./Routers/usuarios');
+const productosRouter = require('./Routers/productos');
+const comprasRouter = require('./Routers/compras');
 
 app.use('/api/usuarios', usuariosRouter);
 app.use('/api/productos', productosRouter);
@@ -74,7 +74,7 @@ app.get('/api', (req, res) => {
 });
 
 //vamos a crear una funcion para las rutas inexisten
-app.use('/api/*', (req, res) => {
+app.use('/api/*path', (req, res) => {
     res.status(404).json({
         status : 'error',
         message : 'Ruta no encontrada'
