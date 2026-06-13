@@ -1,0 +1,116 @@
+:root {
+    --rojo-primario: #d32f2f; /* Rojo intenso */
+    --rojo-oscuro: #b71c1c;   /* Rojo oscuro/vino para hovers */
+    --rojo-claro: #ffebee;    /* Fondo suave para tarjetas */
+    --fondo-app: #f5f5f5;     /* Gris muy claro para el fondo */
+    --texto-oscuro: #212121;
+    --texto-claro: #ffffff;
+    --borde: #e0e0e0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--fondo-app);
+    color: var(--texto-oscuro);
+    line-height: 1.6;
+}
+
+/* --- Encabezado --- */
+header {
+    background-color: var(--rojo-primario);
+    color: var(--texto-claro);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* --- Contenedor Principal --- */
+.container {
+    max-width: 900px;
+    margin: -30px auto 2rem auto; /* Sube ligeramente sobre el header */
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+/* --- Tarjetas / Paneles --- */
+.card {
+    background-color: var(--texto-claro);
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-top: 5px solid var(--rojo-primario);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card h2 {
+    color: var(--rojo-oscuro);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--rojo-claro);
+    padding-bottom: 10px;
+}
+
+.card p {
+    margin-bottom: 10px;
+}
+
+/* --- Listas de texto normales --- */
+.lista-texto {
+    list-style-type: square;
+    padding-left: 20px;
+    color: var(--texto-oscuro);
+}
+
+.lista-texto li {
+    margin-bottom: 8px;
+}
+
+/* --- Menú de Prácticas (Botones) --- */
+.lista-botones {
+    list-style: none;
+    margin-top: 20px;
+    display: grid;
+    gap: 15px;
+}
+
+.lista-botones a {
+    display: block;
+    background-color: var(--texto-claro);
+    color: var(--rojo-primario);
+    text-decoration: none;
+    padding: 15px 20px;
+    border: 2px solid var(--rojo-primario);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.lista-botones a:hover {
+    background-color: var(--rojo-primario);
+    color: var(--texto-claro);
+    box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+}
